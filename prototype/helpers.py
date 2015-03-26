@@ -68,6 +68,29 @@ def next_cell(x, y, exit):
     return new_x, new_y, entry
 
 
+def continuation_exits(entry):
+    """
+    Given a cell and an entry point, find all the possible exit points.
+    """
+    all_corners = {0, 1, 2, 3, 4, 5, 6, 7}
+    return all_corners - {entry, (entry + 1) % 8, (entry - 1) % 8}
+
+
+def test_continuation_exits():
+    known_results = [(0, {2, 3, 4, 5, 6}),
+                     (1, {3, 4, 5, 6, 7}),
+                     (2, {4, 5, 6, 7, 0}),
+                     (3, {5, 6, 7, 0, 1}),
+                     (4, {6, 7, 0, 1, 2}),
+                     (5, {7, 0, 1, 2, 3}),
+                     (6, {0, 1, 2, 3, 4}),
+                     (7, {1, 2, 3, 4, 5})]
+
+    test = poc_simpletest.TestSuite()
+    for arg, expect in known_results:
+        test.run_test(continuation_exits(arg), expect, message="continuation_exits(" + str(arg) + ")")
+
+    test.report_results()
 
 
 def test_next_cell():
@@ -148,6 +171,7 @@ def test_all():
     test_w()
     test_opposite_point()
     test_next_cell()
+    test_continuation_exits()
 
 
 test_all()
