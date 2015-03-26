@@ -8,23 +8,26 @@ import poc_simpletest
 
 # Each cell has 8 possible entry/exit points, and they are numbered
 # clockwise from upper left, starting with zero:
+# @formatter:off
 #
-#   012  012  012
-#   7 3  7 3  7 3
-#   654  654  654
-#      \  |  /
-#   012  012  012
-#   7 3--7 3--7 3
-#   654  654  654
-#      /  | \
-#   012  012  012
-#   7 3  7 3  7 3
-#   654  654  654
+#                   012  012  012
+#                   7 3  7 3  7 3
+#                   654  654  654
+#                      \  |  /
+#                   012  012  012
+#                   7 3--7 3--7 3
+#                   654  654  654
+#                      /  | \
+#                   012  012  012
+#                   7 3  7 3  7 3
+#                   654  654  654
+#
+# @formatter:on
 #
 # We support 3 types of tracks, in all rotations:
-#     1. Straight tracks, horz., vert, or diag. e.g. 0-4, 1-5, 7-3
-#     2. Soft curve, e.g. 1-4, 1-6
-#     3. 90 deg. hard curve, e.g. 1-3, 1-7
+# 1. Straight tracks, horz., vert, or diag. e.g. 0-4, 1-5, 7-3
+# 2. Soft curve, e.g. 1-4, 1-6
+# 3. 90 deg. hard curve, e.g. 1-3, 1-7
 #
 
 
