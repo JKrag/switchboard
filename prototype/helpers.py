@@ -100,15 +100,37 @@ def filter_continuations(current_world, continuations):
     :param continuations: A set of (x, y, p_out), where (x, y) are cell coordinates, and p_out is a numbered exit point
     :return: The given input continuations, filtering out those that are illegal in the provided world
     """
-    pass
+
+    # Currently we are only concerned with whether a cell is occupied, e.g. is it in the world set.
+    # Therefore we only need the x, y from the tuples
+    c_world = map(lambda cw: cw[:2], current_world)
+    no_good = lambda c: next_cell(*c)[:2] not in c_world
+
+    return set(filter(lambda c: no_good(c), continuations))
 
 
 def test_filter_continuations():
     test = poc_simpletest.TestSuite()
+    # Test case empty world
+    world = []
+    poss_continuations = {(0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 5), (0, 0, 6)}
+    expect = poss_continuations
+    test.run_test(filter_continuations(world, poss_continuations), expect,
+                  message="filter_continuations(" + str(world) + ", " + str(poss_continuations) + ")")
+
+    # Test case: Remove one element
     world = [(0, 1, {})]
     poss_continuations = ({(0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 5), (0, 0, 6)})
     expect = {(0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 6)}
+    test.run_test(filter_continuations(world, poss_continuations), expect,
+                  message="filter_continuations(" + str(world) + ", " + str(poss_continuations) + ")")
 
+    # Test case: surrounded
+    world = [(0, 0, {}), (1, 0, {}), (2, 0, {}),
+             (0, 1, {}), (2, 1, {}),
+             (0, 2, {}), (1, 2, {}), (2, 2, {})]
+    poss_continuations = ({(1, 1, 2), (1, 1, 3), (1, 1, 4), (1, 1, 5), (1, 1, 6)})
+    expect = set()
     test.run_test(filter_continuations(world, poss_continuations), expect,
                   message="filter_continuations(" + str(world) + ", " + str(poss_continuations) + ")")
 
