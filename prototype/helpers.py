@@ -9,17 +9,17 @@ import poc_simpletest
 # Each cell has 8 possible entry/exit points, and they are numbered
 # clockwise from upper left, starting with zero:
 #
-# 012  012  012
-# 7 3  7 3  7 3
-# 654  654  654
-# \  |  /
-# 012  012  012
-# 7 3--7 3--7 3
-#                   654  654  654
-#                      /  | \
-#                   012  012  012
-#                   7 3  7 3  7 3
-#                   654  654  654
+#   012  012  012
+#   7 3  7 3  7 3
+#   654  654  654
+#      \  |  /
+#   012  012  012
+#   7 3--7 3--7 3
+#   654  654  654
+#      /  | \
+#   012  012  012
+#   7 3  7 3  7 3
+#   654  654  654
 #
 # We support 3 types of tracks, in all rotations:
 #     1. Straight tracks, horz., vert, or diag. e.g. 0-4, 1-5, 7-3
@@ -73,15 +73,43 @@ def continuation_exits(entry):
     Given a cell and an entry point, find all the possible exit points.
     """
     all_corners = {0, 1, 2, 3, 4, 5, 6, 7}
-    return all_corners - {entry, (entry + 1) % 8, (entry - 1) % 8}
+    cw = (entry + 1) % 8  # clockwise point
+    ccw = (entry - 1) % 8  # counter clockwise point
+    return all_corners - {entry, cw, ccw}
 
 
-def continuations(x, y, entry):
+def continuations(x, y, p_in):
     """
     Given a cell and an entry point, find all the possible exit points.
+    :param x: X-coord of current cell
+    :param y: Y-coord of current cell
+    :param p_in: entry point on current cell
+    :return: set of (x, y, p_out) where x, y are always the provided cell, and p_out are the possible exit points.
     """
-    exit_corners = continuation_exits(entry)
+    exit_corners = continuation_exits(p_in)
     return {(x, y, c) for c in exit_corners}
+
+
+def filter_continuations(current_world, continuations):
+    """
+    Remove those continuations that are not legal given the provided world state
+    :param current_world: A sequence of cell coordinates (x, y, {...}) of cells that are currently in use
+    :param continuations: A set of (x, y, p_out), where (x, y) are cell coordinates, and p_out is a numbered exit point
+    :return: The given input continuations, filtering out those that are illegal in the provided world
+    """
+    pass
+
+
+def test_filter_continuations():
+    test = poc_simpletest.TestSuite()
+    world = [(0, 1, {})]
+    poss_continuations = ({(0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 5), (0, 0, 6)})
+    expect = {(0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 6)}
+
+    test.run_test(filter_continuations(world, poss_continuations), expect,
+                  message="filter_continuations(" + str(world) + ", " + str(poss_continuations) + ")")
+
+    test.report_results()
 
 
 def test_continuations():
@@ -198,6 +226,7 @@ def test_all():
     test_next_cell()
     test_continuations()
     test_continuation_exits()
+    test_filter_continuations()
 
 
 test_all()
