@@ -76,6 +76,31 @@ def continuation_exits(entry):
     return all_corners - {entry, (entry + 1) % 8, (entry - 1) % 8}
 
 
+def continuations(x, y, entry):
+    """
+    Given a cell and an entry point, find all the possible exit points.
+    """
+    exit_corners = continuation_exits(entry)
+    return {(x, y, c) for c in exit_corners}
+
+
+def test_continuations():
+    known_results = [((0, 0, 0), {(0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 5), (0, 0, 6)}),
+                     ((0, 0, 1), {(0, 0, 3), (0, 0, 4), (0, 0, 5), (0, 0, 6), (0, 0, 7)}),
+                     ((0, 0, 2), {(0, 0, 4), (0, 0, 5), (0, 0, 6), (0, 0, 7), (0, 0, 0)}),
+                     ((0, 0, 3), {(0, 0, 5), (0, 0, 6), (0, 0, 7), (0, 0, 0), (0, 0, 1)}),
+                     ((0, 0, 4), {(0, 0, 6), (0, 0, 7), (0, 0, 0), (0, 0, 1), (0, 0, 2)}),
+                     ((0, 0, 5), {(0, 0, 7), (0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 0, 3)}),
+                     ((0, 0, 6), {(0, 0, 0), (0, 0, 1), (0, 0, 2), (0, 0, 3), (0, 0, 4)}),
+                     ((0, 0, 7), {(0, 0, 1), (0, 0, 2), (0, 0, 3), (0, 0, 4), (0, 0, 5)})]
+
+    test = poc_simpletest.TestSuite()
+    for args, expect in known_results:
+        test.run_test(continuations(*args), expect, message="continuations(" + str(args) + ")")
+
+    test.report_results()
+
+
 def test_continuation_exits():
     known_results = [(0, {2, 3, 4, 5, 6}),
                      (1, {3, 4, 5, 6, 7}),
@@ -171,6 +196,7 @@ def test_all():
     test_w()
     test_opposite_point()
     test_next_cell()
+    test_continuations()
     test_continuation_exits()
 
 
